@@ -34,7 +34,7 @@ def process_website_for_emails(place_data):
     if not place_data.get('website'):
         return place_data
     try:
-        emails = scrape_website_for_emails(place_data['website'], max_depth=1)
+        emails = scrape_website_for_emails(place_data['website'], max_depth=1, min_emails_required=2)
         place_data['email'] = ','.join(emails) if emails else ''
         print(place_data)
     except Exception as e:
@@ -70,12 +70,13 @@ def scrape_google_maps_hotels():
                 continue
                 
             print(f"Processing search term: {search_term}")
-            csv_filename = f"{search_term.replace(' ', '_')}.csv"
+            csv_filename = f"results/{search_term.replace(' ', '_')}.csv"
             batch_data = []
             processed_ids = read_processed_ids(csv_filename)
             
             page.goto(f"https://www.google.com/maps/search/{search_term}")
-
+            print(f"\n[DEBUG] Starting scrape_google_maps_hotels function")
+            print(f"[DEBUG] Found {len(search_terms)} search terms to process")
 
             page.wait_for_selector('div.Nv2PK')
 
@@ -89,6 +90,9 @@ def scrape_google_maps_hotels():
 
             while True:
                 cards = page.query_selector_all('div.Nv2PK')
+                print(f"[DEBUG] Loaded {len(processed_ids)} previously processed IDs from {csv_filename}")
+                print(f"[DEBUG] Navigating to Google Maps search for: {search_term}")
+                print(f"[DEBUG] Found {len(cards)} total cards on current page")
 
                 for card in cards:
                     try:
@@ -136,9 +140,11 @@ def scrape_google_maps_hotels():
                             "search_term": search_term
                         }
 
-                        if (rating is None or rating < 4.0) or (reviews is None or reviews <= 15):
-                            print(f"matches less than 4.0 rating or less than 15 reviews. Skipping...")
-                        batch_data.append(place_data)
+                        if reviews is None or reviews <= 50:
+                            print(f"matches less less than 50 reviews. adding...")
+                            batch_data.append(place_data)
+                        else:
+                            print(f"matches more than 50 reviews. skipping...")
 
                         if len(batch_data) >= 50:
                             # Process emails concurrently using ThreadPoolExecutor
@@ -177,6 +183,9 @@ def scrape_google_maps_hotels():
                 time.sleep(2)
                 print(f"Force-scrolled {force_scroll_attempts} times.")
                 page.wait_for_timeout(1000)
+                print(f"[DEBUG] Current batch size: {len(batch_data)}/50")
+                print(f"[DEBUG] Processing batch of {len(batch_data)} items for email scraping")
+                print(f"[DEBUG] Scroll metrics - Current cards: {current_card_count}, Previous: {previous_card_count}, Attempts: {force_scroll_attempts}")
 
 
 scrape_google_maps_hotels()

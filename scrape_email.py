@@ -2,6 +2,36 @@ from playwright.sync_api import sync_playwright, TimeoutError as PlaywrightTimeo
 import re
 from urllib.parse import urljoin, urlparse
 import time
+import csv
+import os
+
+def ensure_csv_has_email_column(csv_filename):
+    """Ensure the CSV file has an email column, add if missing."""
+    if not os.path.exists(csv_filename):
+        return
+    
+    # Read the current CSV content
+    rows = []
+    fieldnames = None
+    with open(csv_filename, 'r', newline='', encoding='utf-8') as f:
+        reader = csv.DictReader(f)
+        fieldnames = reader.fieldnames
+        rows = list(reader)
+    
+    # Check if email column exists
+    if 'email' not in fieldnames:
+        fieldnames.append('email')
+        # Add empty email field to existing rows
+        for row in rows:
+            row['email'] = ''
+        
+        # Write back the updated content
+        with open(csv_filename, 'w', newline='', encoding='utf-8') as f:
+            writer = csv.DictWriter(f, fieldnames=fieldnames)
+            writer.writeheader()
+            writer.writerows(rows)
+            print(f"Added email column to {csv_filename}")
+
 
 # Regex to find email addresses (case-insensitive)
 EMAIL_REGEX = r"[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}"

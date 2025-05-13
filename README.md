@@ -1,6 +1,6 @@
 # Google Maps Business Scraper
 
-A Python-based scraper that automatically extracts business information from Google Maps based on search terms. The scraper collects details such as business names, ratings, reviews, addresses, websites, and phone numbers.
+A Python-based scraper that automatically extracts business information from Google Maps based on search terms. The scraper collects details such as business names, ratings, reviews, addresses, websites, phone numbers, and email addresses from business websites.
 
 ## Features
 
@@ -8,6 +8,8 @@ A Python-based scraper that automatically extracts business information from Goo
 - Batch processing with automatic data saving
 - Progress tracking to resume interrupted scraping
 - CSV output format for easy data analysis
+- Automated email extraction from business websites
+- Multi-threaded processing for faster data collection
 
 ## Prerequisites
 
@@ -61,6 +63,7 @@ The scraper creates separate CSV files for each search term (e.g., `Dentists_in_
 - Address: Business address
 - Website: Business website URL (if available)
 - Phone: Contact number
+- Email: Business email addresses (extracted from website)
 - Search Term: The search query used to find this business
 
 ## Batch Processing
@@ -77,4 +80,18 @@ The scraper processes data in batches of 50 entries to ensure data is saved regu
 
 - The scraper uses headless mode by default for better performance
 - Rate limiting and delays are implemented to prevent blocking
+- Multi-threaded email extraction with 4 worker threads for improved performance
 - Make sure you comply with Google's terms of service when using this scraper
+
+## Email Extraction
+
+The scraper includes an automated email extraction feature that:
+- Scans business websites to find email addresses
+- Processes websites concurrently for faster data collection
+- Updates CSV files with found email addresses
+- Skips already processed websites to avoid duplicate work
+
+To update email information in existing CSV files:
+```bash
+python update_emails.py
+```
