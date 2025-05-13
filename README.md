@@ -63,12 +63,6 @@ The scraper creates separate CSV files for each search term (e.g., `Dentists_in_
 - Phone: Contact number
 - Search Term: The search query used to find this business
 
-## Filtering Criteria
-
-The scraper automatically filters businesses based on:
-- Minimum rating: 4.0 stars
-- Minimum reviews: 15 reviews
-
 ## Batch Processing
 
 The scraper processes data in batches of 50 entries to ensure data is saved regularly. This prevents data loss in case of interruptions and makes it easier to handle large datasets.
