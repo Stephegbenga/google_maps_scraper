@@ -144,7 +144,7 @@ def scrape_google_maps_hotels():
                             print(f"matches less less than 50 reviews. adding...")
                             batch_data.append(place_data)
                         else:
-                            print(f"matches more than 50 reviews. skipping...")
+                            print(f"more than 50 reviews. skipping...")
 
                         if len(batch_data) >= 50:
                             # Process emails concurrently using ThreadPoolExecutor
