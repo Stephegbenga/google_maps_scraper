@@ -83,15 +83,29 @@ The scraper processes data in batches of 50 entries to ensure data is saved regu
 - Multi-threaded email extraction with 4 worker threads for improved performance
 - Make sure you comply with Google's terms of service when using this scraper
 
-## Email Extraction
+## Email Extraction and Validation
 
-The scraper includes an automated email extraction feature that:
+The scraper includes an automated email extraction and validation system that:
 - Scans business websites to find email addresses
 - Processes websites concurrently for faster data collection
 - Updates CSV files with found email addresses
 - Skips already processed websites to avoid duplicate work
+- Validates extracted email addresses using multiple criteria
 
-To update email information in existing CSV files:
+### Email Validation Features
+
+- **Format Validation**: Ensures email addresses follow correct syntax
+- **Disposable Email Detection**: Filters out temporary/disposable email addresses
+- **MX Record Verification**: Validates domain mail server configuration
+- **Popular Domain Whitelisting**: Fast-tracks validation for known reliable domains
+- **Concurrent Processing**: Multi-threaded validation for improved performance
+- **MX Record Caching**: Caches DNS lookup results to reduce API calls
+- **Retry Mechanism**: Implements automatic retries for temporary DNS failures
+- **Multiple DNS Providers**: Uses both Google and Cloudflare DNS servers for reliability
+
+To update and validate email information in existing CSV files:
 ```bash
-python update_emails.py
+python validate_emails.py
 ```
+
+The validation process adds a new 'valid_emails' column to CSV files, containing only the verified email addresses that passed all validation checks.
