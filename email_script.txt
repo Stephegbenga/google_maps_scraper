@@ -1,0 +1,14 @@
+var doGet = (event = {}) => {
+
+  const { parameter } = event;
+  const { message='llll' , email='kkk' , subject='lll' } = parameter;
+  const json = { message, email, subject};
+  MailApp.sendEmail({
+    to: email,
+    subject: subject,
+    htmlBody: message
+  });
+  return ContentService.createTextOutput(JSON.stringify(json)).setMimeType(
+    ContentService.MimeType.JSON
+  );
+};
